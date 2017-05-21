@@ -4,8 +4,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osu.Game.Rulesets.Vitaru", "osu.Game.Rulesets.Vitaru\osu.Game.Rulesets.Vitaru.csproj", "{BEC1A9CB-660A-4188-A500-C34AC203FA23}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C92A607B-1FDD-4954-9F92-03FF547D9080} = {C92A607B-1FDD-4954-9F92-03FF547D9080}
+		{0D3FBF8A-7464-4CF7-8C90-3E7886DF2D4D} = {0D3FBF8A-7464-4CF7-8C90-3E7886DF2D4D}
+		{C76BF5B3-985E-4D39-95FE-97C9C879B83A} = {C76BF5B3-985E-4D39-95FE-97C9C879B83A}
+		{D9A367C9-4C1A-489F-9B05-A0CEA2B53B58} = {D9A367C9-4C1A-489F-9B05-A0CEA2B53B58}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osu.Desktop", "osu\osu.Desktop\osu.Desktop.csproj", "{2A66DD92-ADB1-4994-89E2-C94E04ACDA0D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BEC1A9CB-660A-4188-A500-C34AC203FA23} = {BEC1A9CB-660A-4188-A500-C34AC203FA23}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{0D37A2AD-80A4-464F-A1DE-1560B70F1CE3}"
 EndProject
