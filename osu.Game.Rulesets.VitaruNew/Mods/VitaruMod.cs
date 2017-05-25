@@ -1,7 +1,4 @@
-﻿using osu.Game.Beatmaps;
-using osu.Game.Rulesets.Mods;
-using osu.Game.Rulesets.Vitaru.Objects;
-using osu.Game.Rulesets.Scoring;
+﻿using osu.Game.Rulesets.Mods;
 
 namespace osu.Game.Rulesets.Vitaru.Mods
 {
@@ -52,16 +49,8 @@ namespace osu.Game.Rulesets.Vitaru.Mods
         public override double ScoreMultiplier => 1.18;
     }
 
-    public class VitaruRelax : ModRelax
+    public class VitaruModRelax : ModRelax
     {
         public override bool Ranked => false;
-    }
-
-    public class VitaruModAutoplay : ModAutoplay<VitaruHitObject>
-    {
-        protected override Score CreateReplayScore(Beatmap<VitaruHitObject> beatmap) => new Score
-        {
-            Replay = new VitaruAutoReplay(beatmap)
-        };
     }
 }

@@ -1,10 +1,8 @@
 ﻿using OpenTK;
-using osu.Framework.Audio.Sample;
 using osu.Game.Beatmaps.Timing;
 using osu.Game.Database;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Types;
-using osu.Game.Rulesets.Vitaru.Objects.Projectiles;
 using System;
 using System.Collections.Generic;
 using osu.Game.Audio;
@@ -15,13 +13,6 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Characters
     {
         public bool Shoot = false;
         public Vector2 EnemyPosition;
-        public Vector2 EnemySpeed { get; set; } = new Vector2(0.5f, 0.5f);
-        public double kill30 = 30;
-        public double HitWindowMiss = 1000;
-        
-        public Vector2 EnemyVelocity;
-        public float EnemyAngle;
-        public Action OnShoot;
 
         private const float base_scoring_distance = 100;
         public readonly SliderCurve Curve = new SliderCurve();
@@ -77,8 +68,8 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Characters
         //Main Enemy Function
         public Enemy() : base () { }
         public override HitObjectType Type => HitObjectType.Enemy;
-        public bool IsSlider { get; set; } = false;
-        public bool IsSpinner { get; set; } = false;
+        public bool IsSlider { get; set; }
+        public bool IsSpinner { get; set; }
         public List<SampleInfoList> RepeatSamples { get; set; } = new List<SampleInfoList>();
     }
 }

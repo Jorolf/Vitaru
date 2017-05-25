@@ -186,9 +186,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\osu.Game.Rulesets.Vitaru\osu.Game.Rulesets.Vitaru.csproj">
-      <Project>{bec1a9cb-660a-4188-a500-c34ac203fa23}</Project>
-      <Name>osu.Game.Rulesets.Vitaru</Name>
+    <ProjectReference Include="..\osu.Game.Rulesets.VitaruNew\osu.Game.Rulesets.VitaruNew.csproj">
+      <Project>{e79e499c-70a0-4bf0-abef-1ad598d4a9e1}</Project>
+      <Name>osu.Game.Rulesets.VitaruNew</Name>
     </ProjectReference>
     <ProjectReference Include="..\osu\osu-framework\osu.Framework.Desktop\osu.Framework.Desktop.csproj">
       <Project>{65dc628f-a640-4111-ab35-3a5652bc1e17}</Project>

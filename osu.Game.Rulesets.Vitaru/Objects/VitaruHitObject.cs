@@ -4,7 +4,6 @@
 using osu.Game.Rulesets.Objects;
 using OpenTK;
 using osu.Game.Rulesets.Vitaru.Objects.Drawables;
-using osu.Game.Rulesets.Vitaru.Objects;
 using OpenTK.Graphics;
 using osu.Game.Database;
 using osu.Game.Beatmaps.Timing;

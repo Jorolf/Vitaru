@@ -25,7 +25,7 @@ namespace osu.Game.Rulesets.Vitaru.Beatmaps
             var endTimeData = original as IHasEndTime;
             var positionData = original as IHasPosition;
             var comboData = original as IHasCombo;
-            
+
             if (playerLoaded == false)
             {
                 DrawableCharacter.AssetsLoaded = false;
@@ -61,7 +61,7 @@ namespace osu.Game.Rulesets.Vitaru.Beatmaps
                     StartTime = original.StartTime,
                     Samples = original.Samples,
                     //EndTime = endTimeData.EndTime,
-                    //IsSpinner = true,
+                    IsSpinner = true,
 
                     Position = positionData?.Position ?? VitaruPlayfield.BASE_SIZE / 2,
                 };
@@ -77,14 +77,17 @@ namespace osu.Game.Rulesets.Vitaru.Beatmaps
                 };
             }
         }
+
         private void enemySlider()
         {
 
         }
+
         private void enemySpinner()
         {
 
         }
+
         private void enemyHitcircle()
         {
 
