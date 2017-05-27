@@ -1,25 +1,21 @@
 ﻿using osu.Framework.Graphics;
 using osu.Game.Rulesets.Vitaru.Objects;
-using osu.Game.Rulesets.Vitaru.Objects.Drawables;
 using osu.Game.Rulesets.UI;
 using OpenTK;
 using osu.Game.Rulesets.Vitaru.Judgements;
 using osu.Framework.Graphics.Containers;
 using osu.Game.Rulesets.Objects.Drawables;
-using OpenTK.Graphics;
-using osu.Framework.Extensions.Color4Extensions;
-using osu.Framework.Graphics.Sprites;
+using osu.Game.Rulesets.Vitaru.Objects.Drawables;
 
 namespace osu.Game.Rulesets.Vitaru.UI
 {
     public class VitaruPlayfield : Playfield<VitaruHitObject, VitaruJudgement>
     {
-        public static Container vitaruPlayfield;
+        private readonly Container vitaruPlayfield;
 
         public override bool ProvidingUserCursor => true;
 
         public static readonly Vector2 BASE_SIZE = new Vector2(512, 820);
-        private VitaruUI vitaruUI;
 
         public override Vector2 Size
         {
@@ -32,14 +28,14 @@ namespace osu.Game.Rulesets.Vitaru.UI
             }
         }
 
-        public VitaruPlayfield() : base(BASE_SIZE.X)
+        public VitaruPlayfield(VitaruHitRenderer hitRenderer) : base(BASE_SIZE.X)
         {
-            Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
+            Anchor = Anchor.Centre;
 
             Add(new Drawable[]
             {
-                vitaruUI = new VitaruUI
+                new VitaruUI(hitRenderer)
                 {
                     Masking = false,
                     //Magic numbers, srry in advance
@@ -47,8 +43,6 @@ namespace osu.Game.Rulesets.Vitaru.UI
                     RelativeSizeAxes = Axes.Both,
                     //Magic numbers, srry in advance
                     Size = new Vector2(1.52f , 1.46f),
-                    Origin = Anchor.TopLeft,
-                    Anchor = Anchor.TopLeft,
                 },
                 vitaruPlayfield = new Container
                 {
@@ -59,11 +53,6 @@ namespace osu.Game.Rulesets.Vitaru.UI
             });
         }
 
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-        }
-
         public override void Add(DrawableHitObject<VitaruHitObject, VitaruJudgement> h)
         {
             h.Depth = (float)h.HitObject.StartTime;
@@ -71,6 +60,10 @@ namespace osu.Game.Rulesets.Vitaru.UI
             IDrawableHitObjectWithProxiedApproach c = h as IDrawableHitObjectWithProxiedApproach;
             if (c != null)
                 vitaruPlayfield.Add(c.ProxiedLayer.CreateProxy());
+
+            DrawableCharacter character = h as DrawableCharacter;
+            if (character != null)
+                character.Playfield = this;
 
             base.Add(h);
         }

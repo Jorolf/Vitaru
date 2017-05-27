@@ -1,10 +1,8 @@
 ﻿using OpenTK;
-using osu.Framework.Audio.Sample;
 using osu.Game.Beatmaps.Timing;
 using osu.Game.Database;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Types;
-using osu.Game.Rulesets.Vitaru.Objects.Projectiles;
 using System;
 using System.Collections.Generic;
 using osu.Game.Audio;
@@ -18,7 +16,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Characters
         public Vector2 EnemySpeed { get; set; } = new Vector2(0.5f, 0.5f);
         public double kill30 = 30;
         public double HitWindowMiss = 1000;
-        
+
         public Vector2 EnemyVelocity;
         public float EnemyAngle;
         public Action OnShoot;
@@ -75,7 +73,9 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Characters
         public static Vector2 EnemyPos;
 
         //Main Enemy Function
-        public Enemy() : base () { }
+        public Enemy(VitaruHitRenderer renderer) : base (renderer)
+        {
+        }
         public override HitObjectType Type => HitObjectType.Enemy;
         public bool IsSlider { get; set; } = false;
         public bool IsSpinner { get; set; } = false;

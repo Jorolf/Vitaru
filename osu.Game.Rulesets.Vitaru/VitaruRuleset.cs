@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using osu.Game.Rulesets.UI;
-using System;
 using osu.Game.Graphics;
 using osu.Game.Beatmaps;
 using osu.Game.Screens.Play;
@@ -57,7 +56,6 @@ namespace osu.Game.Rulesets.Vitaru
                             },
                         },
                     };
-
                 case ModType.Special:
                     return new Mod[]
                     {
@@ -71,11 +69,12 @@ namespace osu.Game.Rulesets.Vitaru
                             },
                         },
                     };
-                default : return new Mod[] { };
+                default:
+                    return new Mod[] { };
             }
         }
 
-        public override ScoreProcessor CreateScoreProcessor() => new VitaruScoreProcessor();
+        public override ScoreProcessor CreateScoreProcessor() => new VitaruScoreProcessor(null);
 
         public override IEnumerable<KeyCounter> CreateGameplayKeys() => new KeyCounter[]
         {
@@ -88,6 +87,6 @@ namespace osu.Game.Rulesets.Vitaru
             new KeyCounterKeyboard(Key.Down),
         };
 
-        //public override FontAwesome Icon => FontAwesome.fa_osu_vitaru_o;
+        public override FontAwesome Icon => FontAwesome.fa_tachometer;
     }
 }

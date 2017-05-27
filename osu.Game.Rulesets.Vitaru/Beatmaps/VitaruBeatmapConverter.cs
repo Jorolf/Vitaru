@@ -9,15 +9,20 @@ using osu.Game.Rulesets.Vitaru.UI;
 using osu.Game.Rulesets.Beatmaps;
 using osu.Game.Rulesets.Vitaru.Objects.Characters;
 using osu.Game.Rulesets.Vitaru.Objects.Drawables;
-using osu.Game.Audio;
-using System.Linq;
 
 namespace osu.Game.Rulesets.Vitaru.Beatmaps
 {
     internal class VitaruBeatmapConverter : BeatmapConverter<VitaruHitObject>
     {
         private bool playerLoaded = false;
-        protected override IEnumerable<Type> ValidConversionTypes { get; } = new[] { typeof(IHasPosition) };
+        private readonly VitaruHitRenderer hitRenderer;
+
+        protected override IEnumerable<Type> ValidConversionTypes => new[] { typeof(IHasPosition) };
+
+        public VitaruBeatmapConverter(VitaruHitRenderer hitRenderer)
+        {
+            this.hitRenderer = hitRenderer;
+        }
 
         protected override IEnumerable<VitaruHitObject> ConvertHitObject(HitObject original, Beatmap beatmap)
         {
@@ -25,22 +30,23 @@ namespace osu.Game.Rulesets.Vitaru.Beatmaps
             var endTimeData = original as IHasEndTime;
             var positionData = original as IHasPosition;
             var comboData = original as IHasCombo;
-            
-            if (playerLoaded == false)
+
+            if (!playerLoaded)
             {
-                DrawableCharacter.AssetsLoaded = false;
                 playerLoaded = true;
-                VitaruPlayer.PlayerPosition = new Vector2(256, 700);
-                yield return new VitaruPlayer
+                DrawableCharacter.AssetsLoaded = false;
+                VitaruPlayer player;
+                yield return player = new VitaruPlayer(hitRenderer)
                 {
-                    Position = VitaruPlayer.PlayerPosition,
+                    Position = VitaruHitRenderer.DefaultPlayerPosition,
                     StartTime = 0f,
                 };
+                if (hitRenderer != null) hitRenderer.Player = player;
             }
 
             if (curveData != null)
             {
-                yield return new Enemy
+                yield return new Enemy(hitRenderer)
                 {
                     StartTime = original.StartTime,
                     Samples = original.Samples,
@@ -56,7 +62,7 @@ namespace osu.Game.Rulesets.Vitaru.Beatmaps
             }
             else if (endTimeData != null)
             {
-                yield return new Enemy
+                yield return new Enemy(hitRenderer)
                 {
                     StartTime = original.StartTime,
                     Samples = original.Samples,
@@ -68,7 +74,7 @@ namespace osu.Game.Rulesets.Vitaru.Beatmaps
             }
             else
             {
-                yield return new Enemy
+                yield return new Enemy(hitRenderer)
                 {
                     StartTime = original.StartTime,
                     Samples = original.Samples,

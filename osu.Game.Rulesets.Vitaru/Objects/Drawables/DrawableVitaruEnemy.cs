@@ -8,7 +8,6 @@ using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Objects.Types;
 using osu.Framework.MathUtils;
 using System.Collections.Generic;
-using osu.Game.Rulesets.Vitaru.UI;
 using osu.Game.Audio;
 using System.Linq;
 
@@ -37,32 +36,33 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
             HitboxWidth = 24;
             HitboxColor = Color4.Cyan;
             Alpha = 1;
-
-
         }
 
         private bool hasShot = false;
         private bool sliderDone = false;
-        
 
         protected override void Update()
         {
             enemy.EnemyPosition = enemy.Position;
 
-            if(patternID == -1)
-                getPatternID();
-
             HitDetect();
 
             if (!enemy.IsSlider && !enemy.IsSpinner)
-                hitcircle(patternID);
+                hitcircle();
 
             if (enemy.IsSlider)
-                slider(patternID);
+                slider();
 
             if (enemy.IsSpinner)
                 spinner();
-                
+
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            getPatternID();
         }
 
         /// <summary>
@@ -151,11 +151,11 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
         /// <summary>
         /// All the hitcircle stuff
         /// </summary>
-        private void hitcircle(int patternID)
+        private void hitcircle()
         {
             if (HitObject.StartTime <= Time.Current && hasShot == false)
             {
-                enemyShoot(patternID);
+                enemyShoot();
                 leave();
                 hasShot = true;
             }
@@ -168,17 +168,17 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
         /// <summary>
         /// All The Slider Stuff
         /// </summary>
-        private void slider(int patternID)
+        private void slider()
         {
             if (HitObject.StartTime <= Time.Current && hasShot == false)
             {
-                enemyShoot(patternID);
+                enemyShoot();
                 hasShot = true;
             }
 
             if (enemy.EndTime <= Time.Current && hasShot == true && sliderDone == false)
             {
-                enemyShoot(patternID);
+                enemyShoot();
                 leave();
                 sliderDone = true;
             }
@@ -197,7 +197,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
             {
                 if (repeat < enemy.RepeatCount)
                 {
-                    enemyShoot(patternID);
+                    enemyShoot();
                 }
                 currentRepeat = repeat;
             }
@@ -228,15 +228,16 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
         /// All the shooting stuff
         /// </summary>
 
-        private void enemyShoot(int patternID)
+        private void enemyShoot()
         {
             playerRelativePositionAngle();
             PlaySamples();
+
             switch (patternID)
             {
                 case 2: // Wave
                     Wave w;
-                    VitaruPlayfield.vitaruPlayfield.Add(w = new Wave(Team)
+                    Playfield.Add(w = new Wave(Team)
                     {
                         Origin = Anchor.Centre,
                         Depth = 6,
@@ -252,7 +253,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
 
                 case 4: // Line
                     Line l;
-                    VitaruPlayfield.vitaruPlayfield.Add(l = new Line(Team)
+                    Playfield.Add(l = new Line(Team)
                     {
                         Origin = Anchor.Centre,
                         Depth = 6,
@@ -268,7 +269,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
 
                 case 0: // Cool wave
                     CoolWave cw;
-                    VitaruPlayfield.vitaruPlayfield.Add(cw = new CoolWave(Team)
+                    Playfield.Add(cw = new CoolWave(Team)
                     {
                         Origin = Anchor.Centre,
                         Depth = 6,
@@ -284,7 +285,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
 
                 case 3: // Circle
                     Circle c;
-                    VitaruPlayfield.vitaruPlayfield.Add(c = new Circle(Team)
+                    Playfield.Add(c = new Circle(Team)
                     {
                         Origin = Anchor.Centre,
                         Depth = 6,
@@ -300,7 +301,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
 
                 case 1: // Snipe!
                     Wave f;
-                    VitaruPlayfield.vitaruPlayfield.Add(f = new Wave(Team)
+                    Playfield.Add(f = new Wave(Team)
                     {
                         Origin = Anchor.Centre,
                         Depth = 6,
@@ -319,7 +320,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
         public float playerRelativePositionAngle()
         {
             //Returns a Radian
-            playerPos = (float)Math.Atan2((VitaruPlayer.PlayerPosition.Y - Position.Y),(VitaruPlayer.PlayerPosition.X - Position.X));
+            playerPos = (float)Math.Atan2((enemy.HitRenderer.Player.Position.Y - Position.Y),(enemy.HitRenderer.Player.Position.X - Position.X));
             return playerPos;
         }
     }

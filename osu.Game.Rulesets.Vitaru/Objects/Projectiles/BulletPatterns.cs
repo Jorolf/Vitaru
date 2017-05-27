@@ -5,10 +5,7 @@ using osu.Framework.Graphics.Containers;
 using OpenTK;
 using OpenTK.Graphics;
 using osu.Framework.Graphics;
-using osu.Game.Rulesets.Vitaru.Objects.Drawables;
 using System;
-using osu.Game.Rulesets.Vitaru.UI;
-using osu.Game.Rulesets.Vitaru.Objects.Projectiles;
 
 namespace osu.Game.Rulesets.Vitaru.Objects.Projectiles
 {
@@ -25,7 +22,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Projectiles
         public int Team { get; set; }
 
         public Color4 PatternColor { get; set; } = Color4.White;
-        protected int bulletCount { get; set; } = 0;
+        protected int BulletCount { get; set; } = 0;
 
         public BulletPattern()
         {
@@ -43,14 +40,14 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Projectiles
         {
             base.Update();
 
-            if (bulletCount <= 0)
+            if (BulletCount <= 0)
                 Dispose();
         }
         protected void bulletAddRad(float speed, float angle)
         {
-            bulletCount++;
+            BulletCount--;
             Bullet bullet;
-            VitaruPlayfield.vitaruPlayfield.Add(bullet = new Bullet(Team)
+            ((Container)Parent).Add(bullet = new Bullet(Team)
             {
                 Origin = Anchor.Centre,
                 Depth = 5,
@@ -60,8 +57,8 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Projectiles
                 BulletWidth = PatternBulletWidth,
                 BulletDamage = PatternDamage,
                 DynamicBulletVelocity = DynamicPatternVelocity,
+                Position = ToSpaceOfOtherDrawable(new Vector2(0, 0), Parent)
             });
-            bullet.MoveTo(ToSpaceOfOtherDrawable(new Vector2(0, 0), bullet));
         }
     }
     public class Wave : BulletPattern

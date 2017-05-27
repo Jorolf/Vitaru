@@ -8,10 +8,8 @@ using osu.Game.Rulesets.Vitaru.Objects.Projectiles;
 using osu.Game.Rulesets.Vitaru.UI;
 using osu.Framework.Configuration;
 using osu.Framework.IO.Stores;
-using osu.Framework.Platform;
-using osu.Framework.Audio.Sample;
 using osu.Framework.Graphics.Textures;
-using osu.Framework.Audio;
+using System.Linq;
 
 namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
 {
@@ -35,6 +33,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
         public float CharacterEnergy { get; set; } = 0;
         public int Team { get; set; } = 0; // 0 = Player, 1 = Ememies + Boss(s) in Singleplayer
         public int ProjectileDamage { get; set; }
+        public VitaruPlayfield Playfield;
 
         public int BPM { get; set; } = (180);
         //private SampleChannel sampleShoot;
@@ -64,7 +63,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
         public DrawableCharacter(VitaruHitObject hitObject) : base(hitObject)
         {
         }
-        
+
         /// <summary>
         /// The <see cref="Character"/> gets damaged, with a multiplier of <see cref="DamageMultiplier"/>
         /// </summary>
@@ -118,45 +117,24 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
 
         public void HitDetect()
         {
-            if (VitaruPlayfield.vitaruPlayfield != null)
+            foreach (Bullet bullet in Playfield.Children.OfType<Bullet>())
             {
-                foreach (Drawable draw in VitaruPlayfield.vitaruPlayfield.Children)
+                if (bullet.Team != Team)
                 {
-                    if (draw is Bullet)
+                    Vector2 bulletPos = bullet.ToSpaceOfOtherDrawable(Vector2.Zero, this);
+                    float distance = (float)Math.Sqrt(Math.Pow(bulletPos.X, 2) + Math.Pow(bulletPos.Y, 2));
+                    float minDist = Hitbox.HitboxWidth + bullet.BulletWidth;
+                    float signDist = ((CharacterSign.Size.Y / 2) - 14) + bullet.BulletWidth;
+                    if (distance < minDist)
                     {
-                        Bullet bullet = draw as Bullet;
-                        if (bullet.Team != Team)
-                        {
-                            Vector2 bulletPos = bullet.ToSpaceOfOtherDrawable(Vector2.Zero, this);
-                            float distance = (float)Math.Sqrt(Math.Pow(bulletPos.X, 2) + Math.Pow(bulletPos.Y, 2));
-                            float minDist = Hitbox.HitboxWidth + bullet.BulletWidth;
-                            float signDist = ((CharacterSign.Size.Y / 2) - 14) + bullet.BulletWidth;
-                            if (distance < minDist)
-                            {
-                                bullet.DeleteBullet();
-                                if (TakeDamage(bullet.BulletDamage))
-                                    break;
-                            }
-                            if (CharacterSign.Alpha >= 0.1f && distance < signDist)
-                                bullet.DeleteBullet();
-                        }
+                        bullet.DeleteBullet();
+                        if (TakeDamage(bullet.BulletDamage))
+                            break;
                     }
-                    if(draw is Laser)
-                    {
-                        Laser laser = draw as Laser;
-                        if (laser.Team != Team)
-                        {
-                            /*
-                            circleDistance.x = abs(circle.x - rect.x);
-                            circleDistance.y = abs(circle.y - rect.y);
-                            */
-                        }
-                    }
+                    if (CharacterSign.Alpha >= 0.1f && distance < signDist)
+                        bullet.DeleteBullet();
                 }
             }
-            else
-                throw new Exception();
-
         }
 
         [BackgroundDependencyLoader]
@@ -208,7 +186,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
             };
 
             string characterType = "null";
-            switch(CharacterType)
+            switch (CharacterType)
             {
                 case HitObjectType.Player:
                     characterType = "player";
@@ -240,7 +218,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
     if (circleDistance.x > (rect.width/2 + circle.r)) { return false; }
     if (circleDistance.y > (rect.height/2 + circle.r)) { return false; }
 
-    if (circleDistance.x <= (rect.width/2)) { return true; } 
+    if (circleDistance.x <= (rect.width/2)) { return true; }
     if (circleDistance.y <= (rect.height/2)) { return true; }
 
     cornerDistance_sq = (circleDistance.x - rect.width/2)^2 +

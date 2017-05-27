@@ -8,25 +8,17 @@ using osu.Game.Rulesets.Vitaru.Judgements;
 using osu.Game.Rulesets.Vitaru.Objects;
 using osu.Game.Rulesets.Vitaru.Objects.Drawables;
 using osu.Game.Rulesets.Scoring;
-using osu.Game.Rulesets.UI;
-using osu.Game.Rulesets.Vitaru.Objects.Projectiles;
 
 namespace osu.Game.Rulesets.Vitaru.Scoring
 {
     internal class VitaruScoreProcessor : ScoreProcessor<VitaruHitObject, VitaruJudgement>
     {
+        private readonly VitaruHitRenderer hitRenderer;
 
-        public static float VitaruScore = 0;
-        public static float PlayerEnergy = 0;
-        public static float PlayerHealth = 1;
-
-        public VitaruScoreProcessor()
-        {
-        }
-
-        public VitaruScoreProcessor(HitRenderer<VitaruHitObject, VitaruJudgement> hitRenderer)
+        public VitaruScoreProcessor(VitaruHitRenderer hitRenderer)
             : base(hitRenderer)
         {
+            this.hitRenderer = hitRenderer;
         }
 
         protected override void Reset()
@@ -36,13 +28,8 @@ namespace osu.Game.Rulesets.Vitaru.Scoring
             Health.Value = 1;
             Accuracy.Value = 1;
 
-            PlayerEnergy = 0;
-            PlayerHealth = 1;
-            VitaruScore = 0;
-
-            Health.Value = PlayerHealth;
-            TotalScore.Value = VitaruScore;
-            Accuracy.Value = PlayerEnergy;
+            Health.Value = hitRenderer?.PlayerHealth ?? 0;
+            Accuracy.Value = hitRenderer?.PlayerEnergy ?? 0;
 
             scoreResultCounts.Clear();
             comboResultCounts.Clear();

@@ -4,34 +4,24 @@ using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.MathUtils;
 using osu.Game.Graphics.Backgrounds;
-using osu.Game.Rulesets.Vitaru.Scoring;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace osu.Game.Rulesets.Vitaru.UI
 {
     public class VitaruUI : Container
     {
-        private SpriteText energy;
-        private Container energyBar;
-        private Container friendlyBar;
+        private const float text_size = 40;
+        private readonly VitaruHitRenderer hitRenderer;
+
         private SpriteText health;
-        private Container healthBar;
-        private Container opponentBar;
-        private Triangles energyTriangles;
-        private Triangles healthTriangles;
-        private float textSize = 40;
+        private SpriteText energy;
         private Box energyBarBox;
         private Box healthBarBox;
-        private Box friendlyBarBox;
-        private Box opponentBarBox;
 
-        public VitaruUI()
+        public VitaruUI(VitaruHitRenderer hitRenderer)
         {
+            this.hitRenderer = hitRenderer;
         }
 
         protected override void LoadComplete()
@@ -45,27 +35,25 @@ namespace osu.Game.Rulesets.Vitaru.UI
                     Anchor = Anchor.CentreRight,
                     Origin = Anchor.CentreLeft,
                     Position = new Vector2(8 , 0),
-                    TextSize = textSize,
+                    TextSize = text_size,
                     Colour = Color4.SkyBlue,
-                    Text = "Energy Value Here",
                 },
                 health = new SpriteText
                 {
                     Anchor = Anchor.CentreLeft,
                     Origin = Anchor.CentreRight,
                     Position = new Vector2(-8 , 0),
-                    TextSize = textSize,
+                    TextSize = text_size,
                     Colour = Color4.Green,
-                    Text = "Health Value Here",
                 },
-                energyBar = new Container
+                new Container
                 {
                     Alpha = 1f,
                     Depth = 1,
                     Anchor = Anchor.CentreRight,
                     Origin = Anchor.CentreRight,
                     Colour = Color4.SkyBlue.Opacity(0.5f),
-                    Size = new Vector2(10,820),
+                    Size = new Vector2(10 , 820),
                     BorderColour = Color4.SkyBlue,
                     BorderThickness = 2,
                     Position = new Vector2(0),
@@ -73,10 +61,13 @@ namespace osu.Game.Rulesets.Vitaru.UI
                     {
                         energyBarBox = new Box
                         {
-                            Size = new Vector2(10 , 820),
+                            Width = 10,
                             Colour = Color4.White,
+                            RelativeSizeAxes = Axes.Y,
+                            Origin = Anchor.Centre,
+                            Anchor = Anchor.Centre,
                         },
-                        energyTriangles = new Triangles
+                        new Triangles
                         {
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
@@ -92,25 +83,24 @@ namespace osu.Game.Rulesets.Vitaru.UI
                         Radius = 2,
                     }
                 },
-                healthBar = new Container
+                new Container
                 {
                     Alpha = 1f,
                     Depth = 0,
                     Anchor = Anchor.CentreLeft,
                     Origin = Anchor.CentreLeft,
-                    Colour = Color4.Green.Opacity(0.5f),
-                    Size = new Vector2(10,820),
-                    BorderColour = Color4.Green,
+                    Size = new Vector2(10 , 820),
                     BorderThickness = 2,
                     Position = new Vector2(0),
                     Children = new Drawable[]
                     {
                         healthBarBox = new Box
                         {
-                            Size = new Vector2(10 , 820),
-                            Colour = Color4.White,
+                            RelativeSizeAxes = Axes.Both,
+                            Origin = Anchor.Centre,
+                            Anchor = Anchor.Centre,
                         },
-                        healthTriangles = new Triangles
+                        new Triangles
                         {
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
@@ -126,7 +116,7 @@ namespace osu.Game.Rulesets.Vitaru.UI
                         Radius = 2,
                     }
                 },
-                opponentBar = new Container
+                new Container
                 {
                     Masking = true,
                     Alpha = 1f,
@@ -137,14 +127,14 @@ namespace osu.Game.Rulesets.Vitaru.UI
                     Size = new Vector2(548 , 10),
                     Children = new Drawable[]
                     {
-                        opponentBarBox = new Box
+                        new Box
                         {
                             Size = new Vector2(548 , 10),
                             Colour = Color4.White,
                         },
                     },
                 },
-                friendlyBar = new Container
+                new Container
                 {
                     Masking = false,
                     Alpha = 1f,
@@ -155,7 +145,7 @@ namespace osu.Game.Rulesets.Vitaru.UI
                     Size = new Vector2(548 , 10),
                     Children = new Drawable[]
                     {
-                        friendlyBarBox = new Box
+                        new Box
                         {
                             Size = new Vector2(548 , 10),
                             Colour = Color4.White,
@@ -167,25 +157,12 @@ namespace osu.Game.Rulesets.Vitaru.UI
 
         protected override void Update()
         {
-            base.Update();
-
-            if ((VitaruScoreProcessor.PlayerHealth * 100) > 100)
-                health.Colour = Color4.SkyBlue;
-            if ((VitaruScoreProcessor.PlayerHealth * 100) > 50 && (VitaruScoreProcessor.PlayerHealth * 100) <= 100)
-                health.Colour = Color4.Green;
-            if ((VitaruScoreProcessor.PlayerHealth * 100) <= 50 && (VitaruScoreProcessor.PlayerHealth * 100) > 20)
-                health.Colour = Color4.Yellow;
-            if ((VitaruScoreProcessor.PlayerHealth * 100) <= 20 && (VitaruScoreProcessor.PlayerHealth * 100) > 0)
-                health.Colour = Color4.Red;
-            if ((VitaruScoreProcessor.PlayerHealth * 100) <= 0)
-                health.Colour = Color4.Black;
-
-            energyBar.ResizeTo(new Vector2(10 , VitaruScoreProcessor.PlayerEnergy * 820) , 0);
-            healthBar.ResizeTo(new Vector2(10, VitaruScoreProcessor.PlayerHealth * 820), 0);
-            energyBarBox.ResizeTo(new Vector2(10, VitaruScoreProcessor.PlayerEnergy * 820), 0);
-            healthBarBox.ResizeTo(new Vector2(10, VitaruScoreProcessor.PlayerHealth * 820), 0);
-            energy.Text = (VitaruScoreProcessor.PlayerEnergy * 100).ToString() + "% Charge";
-            health.Text = (Math.Floor(VitaruScoreProcessor.PlayerHealth * 100)).ToString() + "% Health";
+            health.Colour = Interpolation.ValueAt(hitRenderer.PlayerHealth, Color4.Red, Color4.Green, 0, 1, EasingTypes.InOutExpo);
+            healthBarBox.Colour = health.Colour;
+            energyBarBox.ResizeHeightTo(hitRenderer.PlayerEnergy);
+            healthBarBox.ResizeHeightTo(hitRenderer.PlayerHealth);
+            energy.Text = hitRenderer.PlayerEnergy.ToString("P0") + " Charge";
+            health.Text = hitRenderer.PlayerHealth.ToString("P0") + " Health";
         }
     }
 }

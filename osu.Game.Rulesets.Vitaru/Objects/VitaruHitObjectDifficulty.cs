@@ -4,7 +4,6 @@
 using OpenTK;
 using System;
 using System.Diagnostics;
-using System.Linq;
 
 namespace osu.Game.Rulesets.Vitaru.Objects
 {

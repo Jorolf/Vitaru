@@ -1,16 +1,11 @@
-﻿using osu.Framework.Graphics.Containers;
-using OpenTK;
+﻿using OpenTK;
 using OpenTK.Input;
-using osu.Game.Rulesets.Vitaru.Objects.Drawables;
 using osu.Framework.Graphics;
 using osu.Framework.Input;
 using System.Collections.Generic;
-using System;
 using osu.Game.Rulesets.Vitaru.Objects.Projectiles;
 using OpenTK.Graphics;
 using osu.Game.Rulesets.Objects.Drawables;
-using osu.Game.Rulesets.Vitaru.Scoring;
-using osu.Game.Rulesets.Vitaru.UI;
 using osu.Game.Rulesets.Vitaru.Objects.Characters;
 
 namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
@@ -69,8 +64,8 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
                 energyAdd();
             playerInput();
             playerMovement();
-            VitaruScoreProcessor.PlayerHealth = CharacterHealth / 100;
-            VitaruScoreProcessor.PlayerEnergy = CharacterEnergy / 100;
+            player.HitRenderer.PlayerHealth = CharacterHealth / 100;
+            player.HitRenderer.PlayerEnergy = CharacterEnergy / 100;
         }
 
         private void energyAdd()
@@ -82,34 +77,25 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
         private void playerMovement()
         {
             //Handles Player Speed
-            float yTranslationDistance = playerSpeed * (float)(Clock.ElapsedFrameTime);
-            float xTranslationDistance = playerSpeed * (float)(Clock.ElapsedFrameTime);
+            Vector2 possibleMovementDistance = new Vector2(playerSpeed) * (float)Clock.ElapsedFrameTime;
+            Vector2 movement = new Vector2();
 
             if (keys[Key.LShift] | keys[Key.RShift])
-            {
-                xTranslationDistance /= 2;
-                yTranslationDistance /= 2;
-            }
-            if (keys[Key.Up])
-            {
-                VitaruPlayer.PlayerPosition.Y -= yTranslationDistance;
-            }
-            if (keys[Key.Left])
-            {
-                VitaruPlayer.PlayerPosition.X -= xTranslationDistance;
-            }
-            if (keys[Key.Down])
-            {
-                VitaruPlayer.PlayerPosition.Y += yTranslationDistance;
-            }
-            if (keys[Key.Right])
-            {
-                VitaruPlayer.PlayerPosition.X += xTranslationDistance;
-            }
+                possibleMovementDistance /= 2;
 
-            VitaruPlayer.PlayerPosition = Vector2.ComponentMin(VitaruPlayer.PlayerPosition, playerBounds.Yw);
-            VitaruPlayer.PlayerPosition  = Vector2.ComponentMax(VitaruPlayer.PlayerPosition, playerBounds.Xz);
-            Position = VitaruPlayer.PlayerPosition;
+            if (keys[Key.Up])
+                movement.Y = -possibleMovementDistance.Y;
+            if (keys[Key.Left])
+                movement.X = -possibleMovementDistance.X;
+            if (keys[Key.Down])
+                movement.Y = possibleMovementDistance.Y;
+            if (keys[Key.Right])
+                movement.X = possibleMovementDistance.X;
+
+            player.Position += movement;
+            player.Position = Vector2.ComponentMin(player.Position, playerBounds.Yw);
+            player.Position = Vector2.ComponentMax(player.Position, playerBounds.Xz);
+            Position = player.Position;
         }
 
         private void playerInput()
@@ -141,7 +127,7 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
         private void shoot()
         {
             Wave a;
-            VitaruPlayfield.vitaruPlayfield.Add(a = new Wave(Team)
+            Playfield.Add(a = new Wave(Team)
             {
                 Origin = Anchor.Centre,
                 Depth = 5,
@@ -156,10 +142,11 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Drawables
 
         protected override bool OnKeyDown(InputState state, KeyDownEventArgs args)
         {
+            keys[args.Key] = true;
+
             if (args.Key == Key.X)
                 spell();
-            keys[args.Key] = true;
-            if (args.Key == Key.LShift || args.Key == Key.RShift)
+            else if (args.Key == Key.LShift || args.Key == Key.RShift)
                 Hitbox.Alpha = 1;
             return base.OnKeyDown(state, args);
         }
