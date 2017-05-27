@@ -6,6 +6,7 @@ using osu.Game.Rulesets.Objects.Types;
 using System;
 using System.Collections.Generic;
 using osu.Game.Audio;
+using osu.Game.Beatmaps.ControlPoints;
 
 namespace osu.Game.Rulesets.Vitaru.Objects.Characters
 {
@@ -60,13 +61,13 @@ namespace osu.Game.Rulesets.Vitaru.Objects.Characters
             set { Curve.Distance = value; }
         }
 
-        public override void ApplyDefaults(TimingInfo timing, BeatmapDifficulty difficulty)
+        public override void ApplyDefaults(ControlPointInfo controlPointInfo, BeatmapDifficulty difficulty)
         {
-            base.ApplyDefaults(timing, difficulty);
+            base.ApplyDefaults(controlPointInfo, difficulty);
 
-            double scoringDistance = base_scoring_distance * difficulty.SliderMultiplier / timing.SpeedMultiplierAt(StartTime);
+            double scoringDistance = base_scoring_distance * difficulty.SliderMultiplier / controlPointInfo.DifficultyPointAt(StartTime).SpeedMultiplier;
 
-            Velocity = scoringDistance / timing.BeatLengthAt(StartTime);
+            Velocity = scoringDistance / controlPointInfo.TimingPointAt(StartTime).BeatLength;
             TickDistance = scoringDistance / difficulty.SliderTickRate;
         }
 
